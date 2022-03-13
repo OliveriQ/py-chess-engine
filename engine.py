@@ -73,21 +73,19 @@ def count_material(board, color):
     return material
 
 def evaluate(board):
-    evaluation = 0
-
     if board.is_checkmate():
-        evaluation = 99999
+        return -99999
 
     elif board.is_stalemate():
-        evaluation = 0
+        return 0
 
     else:
         evaluation = count_material(board, chess.WHITE) - count_material(board, chess.BLACK)
-    
-    if (board.turn == chess.WHITE):
+        
+        if (board.turn == chess.WHITE):
             return evaluation * 1
 
-    return evaluation * -1
+        return evaluation * -1
 
 def sort_moves(board, moveList):
     move_scores = []
@@ -127,6 +125,8 @@ def score_move(board, move):
 
 
 def quiescence(board, alpha, beta):
+    global nodes
+
     pos_eval = evaluate(board)
 
     if (pos_eval >= beta):
@@ -136,14 +136,11 @@ def quiescence(board, alpha, beta):
         alpha = pos_eval
 
     capture_moves = list(board.generate_legal_captures())
+
     sort_moves(board, capture_moves)
 
-    if len(list(capture_moves)) == 0:
-        if board.is_check():
-            return -99999
-        return 0
-
     for move in capture_moves:
+        nodes += 1
         make_move(board, move)
         score = -quiescence(board, -beta, -alpha)
         unmake_move(board)
@@ -151,7 +148,7 @@ def quiescence(board, alpha, beta):
         if score >= beta:
             return beta
         
-        if (score > alpha):
+        if score > alpha:
             alpha = score
     
     return alpha
@@ -159,16 +156,11 @@ def quiescence(board, alpha, beta):
 def negamax(board, alpha, beta, depth):
     global nodes
 
-    if depth == 0:
+    if depth == 0 or board.is_game_over():
         return quiescence(board, alpha, beta)
 
     max = -99999
     moveList = list(board.legal_moves)
-
-    if len(list(moveList)) == 0:
-        if board.is_check():
-            return -99999
-        return 0
 
     sort_moves(board, moveList)
 
@@ -220,7 +212,7 @@ def root_search(board, depth):
     return best_move
 
 def search(board):
-    return root_search(board, 3)
+    return root_search(board, 4)
 
 print(board)
 
@@ -228,7 +220,6 @@ start = timer()
 best_move = search(board)
 end = timer()
 
-print("Depth: ", 3)
 print("Best move: ", best_move) 
 print("Nodes: ", nodes)
 print("Time: ", end - start)
