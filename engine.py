@@ -2,7 +2,7 @@ import chess
 from timeit import default_timer as timer
 
 
-board = chess.Board("r3k2r/p1ppqpb1/Bn2p1p1/3PN3/1p2P3/2N2Q1p/PPPB1PPP/4K2R b Kkq - 0 1")
+board = chess.Board("r3k2r/1ppqnp1p/p2p2pb/3Pp3/2P1P3/5N2/PP3PPP/RN1Q1RK1 w kq - 0 12")
 
 # Constant piece values
 PAWN_VALUE = 1
@@ -73,18 +73,28 @@ def count_material(board, color):
     return material
 
 def evaluate(board):
-    evaluation = count_material(board, chess.WHITE) - count_material(board, chess.BLACK)
+    evaluation = 0
+
+    if board.is_checkmate():
+        evaluation = 99999
+
+    elif board.is_stalemate():
+        evaluation = 0
+
+    else:
+        evaluation = count_material(board, chess.WHITE) - count_material(board, chess.BLACK)
+    
     if (board.turn == chess.WHITE):
-        return evaluation * 1
+            return evaluation * 1
 
     return evaluation * -1
 
-def sort_moves(moveList):
+def sort_moves(board, moveList):
     move_scores = []
 
     # score each move and add to move_scores
     for move in moveList:
-        move_scores.append(score_move(move))
+        move_scores.append(score_move(board, move))
 
     # sort moves based on score
     for move in range(0, len(moveList)):
@@ -102,7 +112,7 @@ def sort_moves(moveList):
 
     
 
-def score_move(move):
+def score_move(board, move):
     # assign score to move
     move_score = 0
     if (board.is_capture(move)):
@@ -115,27 +125,6 @@ def score_move(move):
     return move_score
 
 
-'''
-int Quiesce( int alpha, int beta ) {
-    int stand_pat = Evaluate();
-    if( stand_pat >= beta )
-        return beta;
-    if( alpha < stand_pat )
-        alpha = stand_pat;
-
-    until( every_capture_has_been_examined )  {
-        MakeCapture();
-        score = -Quiesce( -beta, -alpha );
-        TakeBackMove();
-
-        if( score >= beta )
-            return beta;
-        if( score > alpha )
-           alpha = score;
-    }
-    return alpha;
-}
-'''
 
 def quiescence(board, alpha, beta):
     pos_eval = evaluate(board)
@@ -147,7 +136,12 @@ def quiescence(board, alpha, beta):
         alpha = pos_eval
 
     capture_moves = list(board.generate_legal_captures())
-    sort_moves(capture_moves)
+    sort_moves(board, capture_moves)
+
+    if len(list(capture_moves)) == 0:
+        if board.is_check():
+            return -99999
+        return 0
 
     for move in capture_moves:
         make_move(board, move)
@@ -176,7 +170,7 @@ def negamax(board, alpha, beta, depth):
             return -99999
         return 0
 
-    sort_moves(moveList)
+    sort_moves(board, moveList)
 
     for move in moveList:
         nodes += 1
@@ -211,7 +205,7 @@ def root_search(board, depth):
             return -99999     
         return 0
 
-    sort_moves(moveList)
+    sort_moves(board, moveList)
 
     for move in moveList:
         nodes += 1
@@ -226,7 +220,7 @@ def root_search(board, depth):
     return best_move
 
 def search(board):
-    return root_search(board, 4)
+    return root_search(board, 3)
 
 print(board)
 
@@ -234,7 +228,7 @@ start = timer()
 best_move = search(board)
 end = timer()
 
-print("Depth: ", 4)
+print("Depth: ", 3)
 print("Best move: ", best_move) 
 print("Nodes: ", nodes)
 print("Time: ", end - start)
