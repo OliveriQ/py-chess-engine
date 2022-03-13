@@ -79,32 +79,41 @@ def evaluate(board):
 
     return evaluation * -1
 
-def sort_move(count, moveList):
-    for next_count in range(count + 1, len(moveList)):
-        if moveList[count].score < moveList[next_count].score:
-            temp_move = moveList[count]
-            moveList[count] = moveList[next_count]
-            moveList[next_count] = temp_move
+def sort_moves(moveList):
+    move_scores = []
 
+    # score each move and add to move_scores
+    for move in moveList:
+        move_scores.append(score_move(move))
 
+    # sort moves based on score
+    for move in range(0, len(moveList)):
+        for next_move in range(move + 1, len(moveList)):
+            if move_scores[move] < move_scores[next_move]:
+                # swap scores
+                temp_score = move_scores[move]
+                move_scores[move] = move_scores[next_move]
+                move_scores[next_move] = temp_score
 
-def order_moves(moves):
-    moveList = []
-    # assign value to each move
-    for move in moves:
-        move_score = 0
-        if (board.is_capture(move)):
-            if board.is_en_passant(move):
-                op_color = chess.BLACK if board.turn==chess.WHITE else chess.WHITE
-                move_score = mvv_lva[PT[chess.Piece(chess.PAWN, board.turn)]][PT[chess.Piece(chess.PAWN, op_color)]] + 1000
-            else:
-                move_score = mvv_lva[PT[board.piece_at(move.from_square)]][PT[board.piece_at(move.to_square)]] + 1000
-        
-        moveList.append(Move(move, move_score))
+                # swap moves
+                temp_move = moveList[move]
+                moveList[move] = moveList[next_move]
+                moveList[next_move] = temp_move
+
     
-    # sort moves
 
-    return moveList
+def score_move(move):
+    # assign score to move
+    move_score = 0
+    if (board.is_capture(move)):
+        if board.is_en_passant(move):
+            op_color = chess.BLACK if board.turn==chess.WHITE else chess.WHITE
+            move_score = mvv_lva[PT[chess.Piece(chess.PAWN, board.turn)]][PT[chess.Piece(chess.PAWN, op_color)]] + 1000
+        else:
+            move_score = mvv_lva[PT[board.piece_at(move.from_square)]][PT[board.piece_at(move.to_square)]] + 1000
+
+    return move_score
+
 
 def negamax(board, alpha, beta, depth):
     global nodes
@@ -113,17 +122,16 @@ def negamax(board, alpha, beta, depth):
         return evaluate(board)
 
     max = -99999
-    moveList = order_moves(board.legal_moves)
+    moveList = list(board.legal_moves)
 
     if len(list(moveList)) == 0:
         if board.is_check():
             return -99999
         return 0
 
-    for count in range(0, len(moveList)):
-        sort_move(count, moveList)
-        move = moveList[count].move
+    sort_moves(moveList)
 
+    for move in moveList:
         nodes += 1
         
         make_move(board, move)
@@ -149,17 +157,16 @@ def root_search(board, depth):
     best_move = None
 
     max = -99999
-    moveList = order_moves(board.legal_moves)
+    moveList = list(board.legal_moves)
 
     if len(list(moveList)) == 0:
         if board.is_check():
             return -99999     
         return 0
 
-    for count in range(0, len(moveList)):
-        sort_move(count, moveList)
-        move = moveList[count].move
+    sort_moves(moveList)
 
+    for move in moveList:
         nodes += 1
 
         make_move(board, move)
