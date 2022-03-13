@@ -115,11 +115,58 @@ def score_move(move):
     return move_score
 
 
+'''
+int Quiesce( int alpha, int beta ) {
+    int stand_pat = Evaluate();
+    if( stand_pat >= beta )
+        return beta;
+    if( alpha < stand_pat )
+        alpha = stand_pat;
+
+    until( every_capture_has_been_examined )  {
+        MakeCapture();
+        score = -Quiesce( -beta, -alpha );
+        TakeBackMove();
+
+        if( score >= beta )
+            return beta;
+        if( score > alpha )
+           alpha = score;
+    }
+    return alpha;
+}
+'''
+
+def quiescence(board, alpha, beta):
+    pos_eval = evaluate(board)
+
+    if (pos_eval >= beta):
+        return beta
+
+    if (alpha < pos_eval):
+        alpha = pos_eval
+
+    capture_moves = list(board.generate_legal_captures())
+    sort_moves(capture_moves)
+
+    for move in capture_moves:
+        make_move(board, move)
+        score = -quiescence(board, -beta, -alpha)
+        unmake_move(board)
+
+        if score >= beta:
+            return beta
+        
+        if (score > alpha):
+            alpha = score
+    
+    return alpha
+
 def negamax(board, alpha, beta, depth):
     global nodes
 
     if depth == 0:
-        return evaluate(board)
+        return quiescence(board, alpha, beta)
 
     max = -99999
     moveList = list(board.legal_moves)
