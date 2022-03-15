@@ -1,11 +1,11 @@
 import chess
 
 # Constant piece values
-PAWN_VALUE = 1
-BISHOP_VALUE = 3
-KNIGHT_VALUE = 3
-ROOK_VALUE = 5
-QUEEN_VALUE = 9
+PAWN_VALUE = 100
+BISHOP_VALUE = 300
+KNIGHT_VALUE = 300
+ROOK_VALUE = 500
+QUEEN_VALUE = 900
 
 # Piece square tables
 pawns_table = [
