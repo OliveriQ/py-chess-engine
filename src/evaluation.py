@@ -120,11 +120,11 @@ def count_piece_square_tables(board, turn):
         is_white = False
     
     value += evaluate_piece_square_table(pawns_table, board.pieces(chess.PAWN, turn), is_white)
-    value += evaluate_piece_square_table(pawns_table, board.pieces(chess.KNIGHT, turn), is_white)
-    value += evaluate_piece_square_table(pawns_table, board.pieces(chess.BISHOP, turn), is_white)
-    value += evaluate_piece_square_table(pawns_table, board.pieces(chess.ROOK, turn), is_white)
-    value += evaluate_piece_square_table(pawns_table, board.pieces(chess.QUEEN, turn), is_white)
-    value += evaluate_piece_square_table(pawns_table, board.pieces(chess.KING, turn), is_white)
+    value += evaluate_piece_square_table(knights_table, board.pieces(chess.KNIGHT, turn), is_white)
+    value += evaluate_piece_square_table(bishops_table, board.pieces(chess.BISHOP, turn), is_white)
+    value += evaluate_piece_square_table(rooks_table, board.pieces(chess.ROOK, turn), is_white)
+    value += evaluate_piece_square_table(queens_table, board.pieces(chess.QUEEN, turn), is_white)
+    value += evaluate_piece_square_table(king_middle_table, board.pieces(chess.KING, turn), is_white)
 
     return value
     
