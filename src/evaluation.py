@@ -85,12 +85,15 @@ king_end_table = [
     -50,-30,-30,-30,-30,-30,-30,-50
 ]
 
-def evaluate(board):
-    if board.is_checkmate():
-        return -99999
-
-    elif board.is_stalemate():
+def evaluate(board, depth):
+    if board.is_stalemate():
         return 0
+    
+    elif board.is_repetition():
+        return 0
+    
+    elif board.is_checkmate():
+        return -99999 + (4 - depth)
 
     else:
         turn = board.turn

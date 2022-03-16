@@ -5,7 +5,7 @@ from search import root_search, nodes
 from timeit import default_timer as timer
 
 
-board = chess.Board("n4rk1/5pp1/1q6/6NQ/8/8/5PPP/5RK1 b - - 0 1")
+board = chess.Board("6k1/5R2/3N4/3B4/6P1/P5P1/P1P2K2/4R3 w - - 9 44")
 
 def search(board):
     book_move = opening_book(board, "openings.bin")

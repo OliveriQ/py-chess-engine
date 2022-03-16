@@ -3,10 +3,10 @@ from evaluation import evaluate
 
 nodes = 0
 
-def quiescence(board, alpha, beta):
+def quiescence(board, alpha, beta, depth):
     global nodes
 
-    pos_eval = evaluate(board)
+    pos_eval = evaluate(board, depth)
 
     if (pos_eval >= beta):
         return beta
@@ -21,7 +21,7 @@ def quiescence(board, alpha, beta):
     for move in capture_moves:
         nodes += 1
         make_move(board, move)
-        score = -quiescence(board, -beta, -alpha)
+        score = -quiescence(board, -beta, -alpha, depth)
         unmake_move(board)
 
         if score >= beta:
@@ -35,8 +35,8 @@ def quiescence(board, alpha, beta):
 def negamax(board, alpha, beta, depth):
     global nodes
 
-    if depth == 0 or board.is_game_over():
-        return quiescence(board, alpha, beta)
+    if depth == 0 or board.is_game_over() or board.is_repetition():
+        return quiescence(board, alpha, beta, depth)
 
     max = -99999
     moveList = list(board.legal_moves)
@@ -49,6 +49,8 @@ def negamax(board, alpha, beta, depth):
         make_move(board, move)
         score = -negamax(board, -beta, -alpha, depth-1)
         unmake_move(board)
+
+        
 
         if (score > max):
             max = score
@@ -80,10 +82,12 @@ def root_search(board, depth):
 
     for move in moveList:
         nodes += 1
-
+        print("Move: ", move)
         make_move(board, move)
         score = -negamax(board, -99999, 99999, depth - 1)
         unmake_move(board)
+        print("Score: ", score)
+        print("\n")
         if (score > max):
             max = score
             best_move = move
