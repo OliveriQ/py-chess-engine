@@ -5,6 +5,6 @@ Repository for chess engine written in python. Also available to play against on
 ## Features:
 * Negamax + Quiescence search
 * MVV-LVA heuristic
-* Piece square tables
+* Piece-square tables
 * Opening book
 * Tablebase 
