@@ -1,5 +1,6 @@
 import chess
 
+# Map each piece to a value, for MVV LVA table
 PT = {
     chess.Piece(chess.PAWN, chess.WHITE) : 0,
     chess.Piece(chess.KNIGHT, chess.WHITE) : 1,
@@ -33,10 +34,12 @@ mvv_lva = [
 	[100, 200, 300, 400, 500, 600,  100, 200, 300, 400, 500, 600]
 ]
 
+# Object for storing a move 
 class Move:
     def __init__(self, move, score):
         self.move = move
         self.score = score
+
 
 def make_move(board, move):
     board.push(chess.Move.from_uci(move.uci()))
@@ -46,7 +49,7 @@ def unmake_move(board):
 
 def sort_moves(board, moveList):
     move_scores = []
-
+    
     # score each move and add to move_scores
     for move in moveList:
         move_scores.append(score_move(board, move))

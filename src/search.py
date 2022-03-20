@@ -3,6 +3,7 @@ from evaluation import evaluate
 
 nodes = 0
 
+# Search all captures 
 def quiescence(board, alpha, beta, depth):
     global nodes
 
@@ -32,6 +33,7 @@ def quiescence(board, alpha, beta, depth):
     
     return alpha
 
+# Search all moves until max depth
 def negamax(board, alpha, beta, depth):
     global nodes
 
@@ -63,6 +65,7 @@ def negamax(board, alpha, beta, depth):
 
     return max
 
+# Begin search here
 def root_search(board, depth):
     global nodes
 
@@ -82,12 +85,11 @@ def root_search(board, depth):
 
     for move in moveList:
         nodes += 1
-        print("Move: ", move)
+
         make_move(board, move)
         score = -negamax(board, -99999, 99999, depth - 1)
         unmake_move(board)
-        print("Score: ", score)
-        print("\n")
+
         if (score > max):
             max = score
             best_move = move

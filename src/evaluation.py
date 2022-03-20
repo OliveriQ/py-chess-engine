@@ -85,6 +85,7 @@ king_end_table = [
     -50,-30,-30,-30,-30,-30,-30,-50
 ]
 
+# evaluate given position
 def evaluate(board, depth):
     if board.is_stalemate():
         return 0
@@ -114,7 +115,7 @@ def evaluate(board, depth):
         
         return (evaluation * 1) if turn == chess.WHITE else (evaluation * -1)
         
-
+# score of given side based on the placement of pieces
 def count_piece_square_tables(board, turn):
     value = 0
     is_white = True
@@ -147,7 +148,6 @@ def read_piece_square_table(table, square, is_white):
         square = rank * 8 + file
     
     return table[square]
-
 
 
 def count_material(board, color):
